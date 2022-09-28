@@ -26,13 +26,13 @@ public class ItemController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public List<ItemDto> get(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> get(@RequestHeader("X-Sharer-User-Id") Long userId) {
         return ItemMapper.toListItemDto(itemService.getItems(userId));
     }
 
 
     @GetMapping("/{itemId}")
-    public ItemDto getById(@PathVariable long itemId) {
+    public ItemDto getById(@PathVariable Long itemId) {
         return ItemMapper.toItemDto(itemService.getById(itemId));
     }
 
@@ -46,7 +46,7 @@ public class ItemController {
         return ItemMapper.toListItemDto(itemService.searchItem(parsedText));
     }
     @PostMapping
-    public ItemDto add(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ItemDto add(@RequestHeader("X-Sharer-User-Id") Long userId,
                     @RequestBody @Valid Item item) throws UserNotFoundException, NullStatusException {
         if(!userRepository.getAllUsers().stream()
                 .map(User::getId).toList().contains(userId)) {

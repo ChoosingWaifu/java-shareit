@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user;
 
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getById(long userId) {
+    public User getById(Long userId) {
         return users.get(userId);
     }
 
@@ -40,7 +39,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void deleteUser(long userId) {
+    public void deleteUser(Long userId) {
         users.remove(userId);
     }
 }

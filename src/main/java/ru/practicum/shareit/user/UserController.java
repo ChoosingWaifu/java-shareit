@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public User patchUser(@RequestBody User user, @PathVariable long userId) throws DuplicateEmailException {
+    public User patchUser(@RequestBody User user, @PathVariable Long userId) throws DuplicateEmailException {
         Optional<String> email = Optional.ofNullable(user.getEmail());
         if (email.isPresent()) {
             List<String> emails = service.getUsers().stream()
