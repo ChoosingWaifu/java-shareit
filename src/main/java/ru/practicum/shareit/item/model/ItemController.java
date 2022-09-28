@@ -55,7 +55,7 @@ public class ItemController {
             throw new UserNotFoundException("user not found");
         }
         Optional<Boolean> status = Optional.ofNullable(item.getAvailable());
-        if (status.isEmpty()){
+        if (status.isEmpty()) {
             throw new NullStatusException("status can't be empty");
         }
         item.setOwner(userId);
