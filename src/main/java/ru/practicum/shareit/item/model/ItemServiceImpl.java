@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,11 +13,15 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository repository;
 
+    @Getter
+    @Setter
     private static Long id = 1L;
 
     @Override
     public Item addNewItem(Item item) {
-        item.setId(id++);
+        Long increment = getId();
+        item.setId(increment);
+        setId(++increment);
         return repository.save(item);
     }
 

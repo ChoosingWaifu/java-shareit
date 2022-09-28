@@ -1,6 +1,8 @@
 package ru.practicum.shareit.user;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +15,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
 
+    @Getter
+    @Setter
     private static Long id = 1L;
 
     @Override
     public User addNewUser(User user) {
-        user.setId(id++);
+        Long increment = getId();
+        user.setId(increment);
+        setId(++increment);
         return repository.addNewUser(user);
     }
 
