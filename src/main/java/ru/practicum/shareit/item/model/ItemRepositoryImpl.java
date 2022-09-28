@@ -31,7 +31,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<Item> searchItem(String text) {
         List<Item> empty = new ArrayList<>();
         log.info("searchItem {}", items.values().stream().map(Item::getName).collect(Collectors.toList()));
-        if(text.equals("")){
+        if (text.equals("")) {
             return empty;
         }
         return items.values()
