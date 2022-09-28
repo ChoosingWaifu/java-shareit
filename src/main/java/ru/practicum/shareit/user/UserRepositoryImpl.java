@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class UserRepositoryImpl implements UserRepository {
@@ -19,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAllUsers() {
-        return users.values().stream().toList();
+        return users.values().stream().collect(Collectors.toList());
     }
 
     @Override

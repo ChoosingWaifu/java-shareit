@@ -8,6 +8,7 @@ import ru.practicum.shareit.exceptions.DuplicateEmailException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * TODO Sprint add-controllers.
@@ -33,7 +34,7 @@ public class UserController {
     @PostMapping
     public User addUser(@RequestBody @Valid User user) throws DuplicateEmailException {
         List<String> emails = service.getUsers().stream()
-                .map(User::getEmail).toList();
+                .map(User::getEmail).collect(Collectors.toList());
         if (emails.contains(user.getEmail())) {
             throw new DuplicateEmailException("Duplicate email");
         }
@@ -46,7 +47,7 @@ public class UserController {
         Optional<String> email = Optional.ofNullable(user.getEmail());
         if (email.isPresent()) {
             List<String> emails = service.getUsers().stream()
-                    .map(User::getEmail).toList();
+                    .map(User::getEmail).collect(Collectors.toList());
             if (emails.contains(email.get())) {
                 throw new DuplicateEmailException("Duplicate email");
             }

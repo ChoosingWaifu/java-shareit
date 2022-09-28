@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -49,7 +50,7 @@ public class ItemController {
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") Long userId,
                     @RequestBody @Valid Item item) throws UserNotFoundException, NullStatusException {
         if(!userRepository.getAllUsers().stream()
-                .map(User::getId).toList().contains(userId)) {
+                .map(User::getId).collect(Collectors.toList()).contains(userId)) {
             throw new UserNotFoundException("user not found");
         }
         Optional<Boolean> status = Optional.ofNullable(item.getAvailable());

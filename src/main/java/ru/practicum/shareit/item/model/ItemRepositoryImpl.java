@@ -30,7 +30,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public List<Item> searchItem(String text) {
         List<Item> empty = new ArrayList<>();
-        log.info("searchItem {}", items.values().stream().map(Item::getName).toList());
+        log.info("searchItem {}", items.values().stream().map(Item::getName).collect(Collectors.toList()));
         if(text.equals("")) {
             return empty;
         }
@@ -39,7 +39,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                 .filter(item -> item.getAvailable().equals(true))
                 .filter(item -> item.getName().toLowerCase().contains(text) ||
                                 item.getDescription().toLowerCase().contains(text))
-                .toList();
+                .collect(Collectors.toList());
 
     }
 
