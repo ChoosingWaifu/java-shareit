@@ -40,21 +40,22 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam Optional<String> text) {
         String parsedText = "";
-        if(text.isPresent()) {
+        if(text.isPresent()){
             parsedText = text.get().toLowerCase();
         }
         log.info("search {}", parsedText);
         return ItemMapper.toListItemDto(itemService.searchItem(parsedText));
     }
+
     @PostMapping
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") Long userId,
-                    @RequestBody @Valid Item item) throws UserNotFoundException, NullStatusException {
+                    @RequestBody @Valid Item item) throws UserNotFoundException, NullStatusException{
         if(!userRepository.getAllUsers().stream()
-                .map(User::getId).collect(Collectors.toList()).contains(userId)) {
+                .map(User::getId).collect(Collectors.toList()).contains(userId)){
             throw new UserNotFoundException("user not found");
         }
         Optional<Boolean> status = Optional.ofNullable(item.getAvailable());
-        if(status.isEmpty()) {
+        if(status.isEmpty()){
             throw new NullStatusException("status can't be empty");
         }
         item.setOwner(userId);
@@ -73,7 +74,7 @@ public class ItemController {
     }
     @DeleteMapping("/{itemId}")
     public void deleteItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                           @PathVariable Long itemId) throws InsufficientRightsException {
+                           @PathVariable Long itemId) throws InsufficientRightsException{
         if(!Objects.equals(userId, itemService.getById(itemId).getOwner())) {
             throw new InsufficientRightsException("can't delete other user items");
         }

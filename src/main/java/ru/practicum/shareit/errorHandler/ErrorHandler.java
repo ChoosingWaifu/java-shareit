@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.UserController;
 
 import java.io.IOException;
 import java.util.Map;
+
 @RestControllerAdvice(assignableTypes = {UserController.class, ItemController.class})
 public class ErrorHandler {
 

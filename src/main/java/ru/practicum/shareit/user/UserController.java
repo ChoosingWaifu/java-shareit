@@ -22,17 +22,17 @@ public class UserController {
     private final UserService service;
 
     @GetMapping
-    public List<User> get() {//@RequestHeader("X-Sharer-User-Id") long userId
-         return service.getUsers();
+    public List<User> get(){
+        return service.getUsers();
     }
 
     @GetMapping("/{userId}")
-    public User getById(@PathVariable Long userId) {
+    public User getById(@PathVariable Long userId){
         return service.getById(userId);
     }
 
     @PostMapping
-    public User addUser(@RequestBody @Valid User user) throws DuplicateEmailException {
+    public User addUser(@RequestBody @Valid User user) throws DuplicateEmailException{
         List<String> emails = service.getUsers().stream()
                 .map(User::getEmail).collect(Collectors.toList());
         if (emails.contains(user.getEmail())) {
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public User patchUser(@RequestBody User user, @PathVariable Long userId) throws DuplicateEmailException {
+    public User patchUser(@RequestBody User user, @PathVariable Long userId) throws DuplicateEmailException{
         Optional<String> email = Optional.ofNullable(user.getEmail());
         if (email.isPresent()) {
             List<String> emails = service.getUsers().stream()
@@ -56,8 +56,9 @@ public class UserController {
         log.info("patch {}, {}", userId, user);
         return service.updateUser(user);
     }
+
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable long userId) {
+    public void deleteUser(@PathVariable long userId){
         service.deleteUser(userId);
     }
 }

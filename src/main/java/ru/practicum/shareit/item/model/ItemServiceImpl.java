@@ -12,6 +12,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
 
     private static Long id = 1L;
+
     @Override
     public Item addNewItem(Item item) {
         item.setId(id++);
