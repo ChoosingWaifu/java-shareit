@@ -49,28 +49,28 @@ public class ItemController {
 
     @PostMapping
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") Long userId,
-                    @RequestBody @Valid Item item) throws UserNotFoundException, NullStatusException {
+                    @RequestBody @Valid ItemDto itemDto) throws UserNotFoundException, NullStatusException {
         if (!userRepository.getAllUsers().stream()
                 .map(User::getId).collect(Collectors.toList()).contains(userId)) {
             throw new UserNotFoundException("user not found");
         }
-        Optional<Boolean> status = Optional.ofNullable(item.getAvailable());
+        Optional<Boolean> status = Optional.ofNullable(itemDto.getAvailable());
         if (status.isEmpty()) {
             throw new NullStatusException("status can't be empty");
         }
-        item.setOwner(userId);
-        log.info("created item {}", item);
-        return ItemMapper.toItemDto(itemService.addNewItem(item));
+        Item result = ItemMapper.toItem(itemDto, userId);
+        log.info("created item {}", result);
+        return ItemMapper.toItemDto(itemService.addNewItem(result));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto patch(@RequestHeader("X-Sharer-User-Id") Long userId,
-                      @RequestBody Item item, @PathVariable Long itemId) throws InsufficientRightsException {
+                      @RequestBody ItemDto itemDto, @PathVariable Long itemId) throws InsufficientRightsException {
         if (!Objects.equals(userId, itemService.getById(itemId).getOwner())) {
             throw new InsufficientRightsException("can't patch other user items");
         }
-        log.info("item {} updated with {}", itemService.getById(itemId), item);
-        return ItemMapper.toItemDto(itemService.updateItem(item, itemId));
+        log.info("item {} updated with {}", itemService.getById(itemId), itemDto);
+        return itemService.updateItem(itemDto, itemId);
     }
 
     @DeleteMapping("/{itemId}")

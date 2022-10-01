@@ -16,6 +16,15 @@ public class ItemMapper {
         );
     }
 
+    public static Item toItem(ItemDto itemdto, Long ownerId) {
+        return new Item(null,
+                itemdto.getName(),
+                itemdto.getDescription(),
+                itemdto.getAvailable(),
+                ownerId
+        );
+    }
+
     public static List<ItemDto> toListItemDto(List<Item> itemList) {
        List<ItemDto> result = new ArrayList<>();
        for (Item item: itemList) {

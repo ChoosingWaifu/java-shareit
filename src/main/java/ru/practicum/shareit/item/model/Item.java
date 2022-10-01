@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Item {
 
     private Long id;

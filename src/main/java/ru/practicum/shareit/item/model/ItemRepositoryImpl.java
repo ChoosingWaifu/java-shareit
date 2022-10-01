@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,14 +49,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item update(Item item) {
-        Item resultItem = items.get(item.getId());
-        Optional<String> name = Optional.ofNullable(item.getName());
-        Optional<String> description = Optional.ofNullable(item.getDescription());
-        Optional<Boolean> available = Optional.ofNullable(item.getAvailable());
-        name.ifPresent(resultItem::setName);
-        description.ifPresent(resultItem::setDescription);
-        available.ifPresent(resultItem::setAvailable);
+    public Item update(Item resultItem) {
         items.put(resultItem.getId(), resultItem);
         return resultItem;
     }
