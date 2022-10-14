@@ -19,7 +19,7 @@ import java.util.List;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
     private String name;
@@ -28,7 +28,7 @@ public class Item {
     private Boolean available;
     private Long owner;
 
-    @OneToMany(mappedBy="id")
+    @OneToMany(mappedBy = "id")
     private List<Comment> comments;
 
     @Override

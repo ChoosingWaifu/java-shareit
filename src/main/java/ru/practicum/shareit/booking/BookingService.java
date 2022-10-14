@@ -11,7 +11,7 @@ public interface BookingService {
 
     Booking post(Booking booking);
 
-    Booking approve(Long userId, Long BookingId, Boolean approved) throws NotFoundException, InsufficientRightsException;
+    Booking approve(Long userId, Long bookingId, Boolean approved) throws NotFoundException, InsufficientRightsException;
 
     Booking getById(Long bookingId) throws NotFoundException;
 

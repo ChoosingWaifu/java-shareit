@@ -51,7 +51,7 @@ public class ItemController {
         }
         parsedText = text.get().toLowerCase();
         log.info("search {}", parsedText);
-        if(parsedText.isEmpty()) {
+        if (parsedText.isEmpty()) {
             return new ArrayList<>();
         }
         return ItemMapper.toListItemDto(itemService.searchItem(parsedText));

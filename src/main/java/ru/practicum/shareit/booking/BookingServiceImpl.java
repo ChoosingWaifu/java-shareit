@@ -44,7 +44,7 @@ public class BookingServiceImpl implements BookingService {
         }
         Booking result = booking.get();
         Item bookedItem = itemRepository.findById(result.getItemId())
-                .orElseThrow(()-> new NotFoundException("item not found"));
+                .orElseThrow(() -> new NotFoundException("item not found"));
         if (!bookedItem.getOwner().equals(userId)) {
             throw new InsufficientRightsException("can't approve others item bookings");
         }
@@ -66,10 +66,10 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookingList = repository.findByBooker(userId);
         List<BookingPostDto> dtoList = new ArrayList<>();
         User booker = userRepository.findById(userId)
-                .orElseThrow(()->new NotFoundException("user not found"));
+                .orElseThrow(() -> new NotFoundException("user not found"));
         for (Booking booking: bookingList) {
             Item item = itemRepository.findById(booking.getItemId())
-                            .orElseThrow(()-> new NotFoundException("item not found"));
+                            .orElseThrow(() -> new NotFoundException("item not found"));
             dtoList.add(BookingMapper.toPostDto(booking, item, booker));
         }
         return bookingStateFilter(state, dtoList);
@@ -77,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingPostDto> getItemsBookings(Long userId, State state) throws NotFoundException {
-        List <Item> items = itemRepository.findByOwner(userId);
+        List<Item> items = itemRepository.findByOwner(userId);
         List<Long> itemsId = items.stream().map(Item::getId).collect(Collectors.toList());
         List<Booking> bookingList = new ArrayList<>();
         List<BookingPostDto> dtoList = new ArrayList<>();
@@ -86,9 +86,9 @@ public class BookingServiceImpl implements BookingService {
         }
         for (Booking booking: bookingList) {
             Item item = itemRepository.findById(booking.getItemId())
-                    .orElseThrow(()-> new NotFoundException("item not found"));
+                    .orElseThrow(() -> new NotFoundException("item not found"));
             User booker = userRepository.findById(booking.getBooker())
-                    .orElseThrow(()->new NotFoundException("user not found"));
+                    .orElseThrow(() -> new NotFoundException("user not found"));
             dtoList.add(BookingMapper.toPostDto(booking, item, booker));
         }
         return bookingStateFilter(state, dtoList);

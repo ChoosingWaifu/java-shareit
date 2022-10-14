@@ -7,6 +7,7 @@ import ru.practicum.shareit.exceptions.NotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
+
 @RestController
 @Slf4j
 @RequestMapping(path = "/users")

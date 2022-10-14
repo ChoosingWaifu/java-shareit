@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemWithBookingDto> getItems(Long userId) throws NotFoundException {
         List<ItemWithBookingDto> result = new ArrayList<>();
         List<Item> itemList = repository.findByOwner(userId);
-        for(Item item: itemList) {
+        for (Item item: itemList) {
             result.add(toItemWithBookingDto(item));
         }
         return result;
@@ -57,13 +57,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item getById(Long itemId) throws NotFoundException {
         return repository.findById(itemId)
-                .orElseThrow(()-> new NotFoundException("item not found"));
+                .orElseThrow(() -> new NotFoundException("item not found"));
     }
 
     @Override
     public ItemWithBookingDto getByIdWithBooking(Long itemId, Long userId) throws NotFoundException {
         Item item = repository.findById(itemId)
-                .orElseThrow(()-> new NotFoundException("item not found"));
+                .orElseThrow(() -> new NotFoundException("item not found"));
         if (!userId.equals(item.getOwner())) {
             List<Comment> comments = commentRepository.findByItem(item.getId());
             return ItemMapper.toWithBookingDto(item, null, null, commentAuthorNameDto(comments));
