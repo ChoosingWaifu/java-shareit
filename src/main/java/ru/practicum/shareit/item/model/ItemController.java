@@ -12,24 +12,20 @@ import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemWithBookingDto;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-    private final ItemService itemService;
 
-    private final UserRepository userRepository;
+    private final ItemService itemService;
 
     @GetMapping
     public List<ItemWithBookingDto> get(@RequestHeader("X-Sharer-User-Id") Long userId) throws NotFoundException {
@@ -60,17 +56,9 @@ public class ItemController {
     @PostMapping
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") Long userId,
                     @RequestBody @Valid ItemDto itemDto) throws NotFoundException, NullStatusException {
-        if (!userRepository.findAll().stream()
-                .map(User::getId).collect(Collectors.toList()).contains(userId)) {
-            throw new NotFoundException("user not found");
-        }
-        Optional<Boolean> status = Optional.ofNullable(itemDto.getAvailable());
-        if (status.isEmpty()) {
-            throw new NullStatusException("status can't be empty");
-        }
         Item result = ItemMapper.toItem(itemDto, userId);
         log.info("created item {}", result);
-        return ItemMapper.toItemDto(itemService.addNewItem(result));
+        return ItemMapper.toItemDto(itemService.addNewItem(result, userId));
     }
 
     @PostMapping("/{itemId}/comment")

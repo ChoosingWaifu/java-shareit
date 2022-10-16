@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,16 +29,16 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@RequestBody @Valid User user) {
-        log.info("created new user {}", user);
-        return service.addNewUser(user);
+    public UserDto addUser(@RequestBody @Valid UserDto userDto) {
+        log.info("created new user {}", userDto);
+        return UserMapper.toUserDto(service.addNewUser(userDto));
     }
 
     @PatchMapping("/{userId}")
-    public User patchUser(@RequestBody User user, @PathVariable Long userId) throws NotFoundException {
-        user.setId(userId);
-        log.info("patch {}, {}", userId, user);
-        return service.updateUser(user);
+    public UserDto patchUser(@RequestBody UserDto userDto, @PathVariable Long userId) throws NotFoundException {
+        userDto.setId(userId);
+        log.info("patch {}, {}", userId, userDto);
+        return UserMapper.toUserDto(service.updateUser(userDto));
     }
 
     @DeleteMapping("/{userId}")

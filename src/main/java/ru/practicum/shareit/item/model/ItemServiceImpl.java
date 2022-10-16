@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.exceptions.NullStatusException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.comment.dto.CommentAuthorNameDto;
@@ -40,7 +41,15 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Item addNewItem(Item item) {
+    public Item addNewItem(Item item, Long userId) throws NotFoundException, NullStatusException {
+        if (!userRepository.findAll().stream()
+                .map(User::getId).collect(Collectors.toList()).contains(userId)) {
+            throw new NotFoundException("user not found");
+        }
+        Optional<Boolean> status = Optional.ofNullable(item.getAvailable());
+        if (status.isEmpty()) {
+            throw new NullStatusException("status can't be empty");
+        }
         return repository.save(item);
     }
 

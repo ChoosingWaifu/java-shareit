@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +18,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
-    public User addNewUser(User user) {
+    public User addNewUser(UserDto userDto) {
+        User user = UserMapper.toUser(userDto);
         return repository.save(user);
     }
 
@@ -32,8 +35,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user) throws NotFoundException {
-        User resultUser = getById(user.getId());
+    public User updateUser(UserDto userDto) throws NotFoundException {
+        User user = UserMapper.toUser(userDto);
+        User resultUser = getById(userDto.getId());
         Optional<String> name = Optional.ofNullable(user.getName());
         Optional<String> email = Optional.ofNullable(user.getEmail());
         name.ifPresent(resultUser::setName);

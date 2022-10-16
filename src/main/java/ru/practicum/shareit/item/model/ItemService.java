@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.NullStatusException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.comment.dto.CommentAuthorNameDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -12,7 +13,7 @@ public interface ItemService {
 
     List<Item> searchItem(String text);
 
-    Item addNewItem(Item item);
+    Item addNewItem(Item item, Long userId) throws NotFoundException, NullStatusException;
 
     List<ItemWithBookingDto> getItems(Long userId) throws NotFoundException;
 
