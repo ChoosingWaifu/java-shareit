@@ -3,16 +3,13 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.DuplicateEmailException;
+import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @Slf4j
 @RequestMapping(path = "/users")
@@ -27,34 +24,21 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getById(@PathVariable Long userId) {
+    public User getById(@PathVariable Long userId) throws NotFoundException {
         return service.getById(userId);
     }
 
     @PostMapping
-    public User addUser(@RequestBody @Valid User user) throws DuplicateEmailException {
-        List<String> emails = service.getUsers().stream()
-                .map(User::getEmail).collect(Collectors.toList());
-        if (emails.contains(user.getEmail())) {
-            throw new DuplicateEmailException("Duplicate email");
-        }
-        log.info("created new user {}", user);
-        return service.addNewUser(user);
+    public UserDto addUser(@RequestBody @Valid UserDto userDto) {
+        log.info("created new user {}", userDto);
+        return UserMapper.toUserDto(service.addNewUser(userDto));
     }
 
     @PatchMapping("/{userId}")
-    public User patchUser(@RequestBody User user, @PathVariable Long userId) throws DuplicateEmailException {
-        Optional<String> email = Optional.ofNullable(user.getEmail());
-        if (email.isPresent()) {
-            List<String> emails = service.getUsers().stream()
-                    .map(User::getEmail).collect(Collectors.toList());
-            if (emails.contains(email.get())) {
-                throw new DuplicateEmailException("Duplicate email");
-            }
-        }
-        user.setId(userId);
-        log.info("patch {}, {}", userId, user);
-        return service.updateUser(user);
+    public UserDto patchUser(@RequestBody UserDto userDto, @PathVariable Long userId) throws NotFoundException {
+        userDto.setId(userId);
+        log.info("patch {}, {}", userId, userDto);
+        return UserMapper.toUserDto(service.updateUser(userDto));
     }
 
     @DeleteMapping("/{userId}")
