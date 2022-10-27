@@ -28,6 +28,9 @@ public class Item {
     private Boolean available;
     private Long owner;
 
+    @Column(name = "request")
+    private Long requestId;
+
     @OneToMany(mappedBy = "id")
     private List<Comment> comments;
 
@@ -39,4 +42,5 @@ public class Item {
                 ", owner=" + owner +
                 '}';
     }
+
 }

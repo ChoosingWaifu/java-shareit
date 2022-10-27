@@ -8,13 +8,16 @@ import ru.practicum.shareit.booking.BookingController;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.ItemController;
 import ru.practicum.shareit.item.model.ItemServiceImpl;
+import ru.practicum.shareit.request.ItemRequestController;
+import ru.practicum.shareit.request.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.UserController;
 
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.Map;
 
-@RestControllerAdvice(assignableTypes = {UserController.class, ItemController.class, BookingController.class, ItemServiceImpl.class})
+@RestControllerAdvice(assignableTypes = {UserController.class, ItemController.class, BookingController.class,
+                                         ItemServiceImpl.class, ItemRequestController.class, ItemRequestServiceImpl.class})
 public class ErrorHandler {
 
     @ExceptionHandler({NullStatusException.class, UnavailableItemException.class, ValidationException.class})

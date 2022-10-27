@@ -42,4 +42,13 @@ public class BookingPostDto {
         private Long id;
         private String name;
     }
+
+    @Override
+    public String toString() {
+        return "BookingPostDto{" +
+                "id=" + id +
+                ", start=" + start +
+                ", status=" + status +
+                '}';
+    }
 }

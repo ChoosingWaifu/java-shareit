@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface UserService {
 
-    User addNewUser(UserDto userDto);
+    UserDto addNewUser(UserDto userDto);
 
-    List<User> getUsers();
+    List<UserDto> getUsers();
 
-    User getById(Long userId) throws NotFoundException;
+    UserDto getById(Long userId) throws NotFoundException;
 
-    User updateUser(UserDto userDto) throws NotFoundException;
+    UserDto updateUser(UserDto userDto) throws NotFoundException;
 
     void deleteUser(Long userId);
 }
