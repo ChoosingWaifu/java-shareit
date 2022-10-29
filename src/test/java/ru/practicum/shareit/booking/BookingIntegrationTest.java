@@ -56,7 +56,7 @@ public class BookingIntegrationTest {
     }
 
     @Test
-    void post() throws Exception {
+    void post() {
         BookingPostDto result = service.post(bookingDto1, user2.getId());
         Assertions.assertEquals(bookingDto1.getStart(), result.getStart());
         Assertions.assertEquals(bookingDto1.getEnd(), result.getEnd());
@@ -78,7 +78,7 @@ public class BookingIntegrationTest {
     }
 
     @Test
-    void approve() throws Exception {
+    void approve() {
         service.post(bookingDto1, user2.getId());
         Assertions.assertThrows(InsufficientRightsException.class, () -> service.approve(user2.getId(), 1L, true));
         BookingPostDto result = service.approve(user1.getId(), 1L, true);
@@ -99,7 +99,7 @@ public class BookingIntegrationTest {
     }
 
     @Test
-    void getDtoById() throws Exception {
+    void getDtoById() {
         Assertions.assertThrows(NotFoundException.class, () -> service.getDtoById(1L, 666L));
 
         service.post(bookingDto1, user2.getId());
@@ -120,7 +120,7 @@ public class BookingIntegrationTest {
     }
 
     @Test
-    void getUserBookings() throws Exception {
+    void getUserBookings() {
         Assertions.assertThrows(NotFoundException.class, () -> service.getUserBookings(666L,"ALL", 0, 20));
 
         service.post(bookingDto1, user2.getId());
@@ -136,7 +136,7 @@ public class BookingIntegrationTest {
     }
 
     @Test
-    void getItemsBookings() throws Exception {
+    void getItemsBookings() {
         Assertions.assertThrows(NotFoundException.class, () -> service.getItemsBookings(666L,"ALL", 0, 20));
 
         service.post(bookingDto1, user2.getId());

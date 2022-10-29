@@ -13,6 +13,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByRequestId(Long requestId);
 
+    List<Item> findAllByRequestIdNotNull();
+
     List<Item> findByNameOrDescriptionContainingIgnoreCaseAndAvailable(String text, String text2, Boolean available, Pageable pageable);
 }
 

@@ -53,7 +53,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    void addNewItem() throws Exception {
+    void addNewItem() {
         Item result = service.addNewItem(item1, user1.getId());
         Assertions.assertEquals(item1.getName(), result.getName());
         Assertions.assertEquals(item1.getDescription(), result.getDescription());
@@ -66,7 +66,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    void getByIdWithBooking() throws Exception {
+    void getByIdWithBooking() {
         Assertions.assertThrows(NotFoundException.class, () -> service.getByIdWithBooking(item1.getId(), user2.getId()));
 
         service.addNewItem(item1, user1.getId());
@@ -80,7 +80,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    void getItems() throws Exception {
+    void getItems() {
         repository.save(item1);
         List<ItemWithBookingDto> result = service.getItems(user1.getId(), 0, 20);
 
@@ -91,7 +91,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    void postComment() throws Exception {
+    void postComment() {
         Assertions.assertThrows(NotFoundException.class,
                 () -> service.postComment("comment text", item1.getId(), 666L));
         Assertions.assertThrows(ValidationException.class,

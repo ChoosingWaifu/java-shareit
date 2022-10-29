@@ -17,4 +17,14 @@ public class CommentAuthorNameDto {
     private String text;
     private String authorName;
     private LocalDateTime created;
+
+    @Override
+    public String toString() {
+        return "CommentAuthorNameDto{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", authorName='" + authorName + '\'' +
+                ", created=" + created +
+                '}';
+    }
 }

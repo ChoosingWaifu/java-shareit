@@ -36,7 +36,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateUser() throws Exception {
+    public void updateUser() {
         Mockito.when(mockUserRepository.findById(any()))
                 .thenReturn(Optional.of(user1));
         Mockito.when(mockUserRepository.save(any()))
@@ -45,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getById() throws Exception {
+    public void getById() {
         Mockito.when(mockUserRepository.findById(any()))
                 .thenReturn(Optional.of(user1));
         Assertions.assertEquals(userDto1.toString(), userService.getById(user1.getId()).toString());

@@ -31,4 +31,14 @@ public class ItemRequest {
     private Long userId;
     @CreationTimestamp
     private LocalDateTime created;
+
+    @Override
+    public String toString() {
+        return "ItemRequest{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", userId=" + userId +
+                ", created=" + created +
+                '}';
+    }
 }

@@ -39,7 +39,7 @@ public class ItemServiceTest {
     private final ItemDto itemDtoUpdate1 = new ItemDto(1L,"itemUpdate","desc1",true,null);
 
     @Test
-    void getById() throws Exception {
+    void getById() {
         Mockito.when(mockItemRepository.findById(any()))
                 .thenReturn(Optional.of(item1));
         Assertions.assertEquals(item1.toString(), itemService.getById(item1.getId()).toString());
@@ -53,7 +53,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void deleteItem() throws Exception {
+    void deleteItem() {
         Mockito.when(mockItemRepository.findById(any())).thenReturn(Optional.of(item1));
         itemService.deleteItem(item1.getId(), item1.getOwner());
         Mockito.verify(mockItemRepository, Mockito.times(1)).deleteById(item1.getId());
@@ -61,7 +61,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void updateItem() throws Exception {
+    void updateItem() {
         Mockito.when(mockItemRepository.findById(any()))
                 .thenReturn(Optional.of(item1));
         Mockito.when(mockItemRepository.save(any()))

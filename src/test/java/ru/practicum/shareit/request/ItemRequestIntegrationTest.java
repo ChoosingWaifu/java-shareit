@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
@@ -46,7 +47,7 @@ public class ItemRequestIntegrationTest {
     }
 
     @Test
-    void postRequest() throws Exception {
+    void postRequest() {
         Assertions.assertThrows(NotFoundException.class, () -> service.postRequest("request1", 666L));
         ItemRequest result = service.postRequest("request1", user1.getId());
         Assertions.assertEquals(user1.getId(), result.getUserId());
@@ -54,14 +55,14 @@ public class ItemRequestIntegrationTest {
     }
 
     @Test
-    void getById() throws Exception {
+    void getById() {
         Assertions.assertThrows(NotFoundException.class, () -> service.getRequestById(request1.getId(), 666L));
         itemRepository.save(item1);
         repository.save(request1);
         ItemRequestInfoDto result = service.getRequestById(request1.getId(), user1.getId());
         Assertions.assertEquals(request1.getDescription(), result.getDescription());
         Assertions.assertEquals(request1.getUserId(), result.getUserId());
-        Assertions.assertEquals(result.getItems().toString(), List.of(item1).toString());
+        Assertions.assertEquals(result.getItems().toString(), List.of(ItemMapper.toItemDto(item1)).toString());
 
         repository.delete(request1);
         Assertions.assertThrows(NotFoundException.class, () -> service.getRequestById(request1.getId(), user1.getId()));
@@ -74,18 +75,18 @@ public class ItemRequestIntegrationTest {
         itemRepository.save(item1);
         itemRepository.save(item2);
         List<ItemRequestInfoDto> result = service.getAllRequests(user1.getId(), 0, 20);
-        Assertions.assertEquals(result.get(0).getItems().toString(), List.of(item2).toString());
+        Assertions.assertEquals(result.get(0).getItems().toString(), List.of(ItemMapper.toItemDto(item2)).toString());
     }
 
     @Test
-    void getUserRequests() throws Exception {
+    void getUserRequests() {
         Assertions.assertThrows(NotFoundException.class, () -> service.getUserRequests(666L));
         repository.save(request1);
         repository.save(request2);
         itemRepository.save(item1);
         itemRepository.save(item2);
         List<ItemRequestInfoDto> result = service.getUserRequests(user1.getId());
-        Assertions.assertEquals(result.get(0).getItems().toString(), List.of(item1).toString());
+        Assertions.assertEquals(result.get(0).getItems().toString(), List.of(ItemMapper.toItemDto(item1)).toString());
     }
 
 }

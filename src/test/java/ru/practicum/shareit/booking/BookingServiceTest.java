@@ -35,7 +35,7 @@ public class BookingServiceTest {
             LocalDateTime.now().plusMinutes(100), 1L, 1L, null);
 
     @Test
-    void getById() throws Exception {
+    void getById() {
         Mockito.when(mockRepository.findById(any()))
                 .thenReturn(Optional.of(booking1));
         Assertions.assertEquals(booking1.toString(), bookingService.getById(booking1.getId()).toString());
