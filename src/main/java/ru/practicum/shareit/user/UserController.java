@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
@@ -23,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getById(@PathVariable Long userId) throws NotFoundException {
+    public UserDto getById(@PathVariable Long userId) {
         return service.getById(userId);
     }
 
@@ -34,7 +33,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto patchUser(@RequestBody UserDto userDto, @PathVariable Long userId) throws NotFoundException {
+    public UserDto patchUser(@RequestBody UserDto userDto, @PathVariable Long userId) {
         userDto.setId(userId);
         log.info("patch {}, {}", userId, userDto);
         return service.updateUser(userDto);

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
@@ -26,7 +25,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestReturnDto postRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                            @RequestBody @Valid ItemRequestDto itemRequestDto) throws NotFoundException {
+                                            @RequestBody @Valid ItemRequestDto itemRequestDto) {
         String request = itemRequestDto.getDescription();
         log.info("post item request controller {}", userId);
         return ItemRequestMapper.toReturnDto(service.postRequest(request, userId));
@@ -34,13 +33,13 @@ public class ItemRequestController {
 
     @GetMapping("/{requestId}")
     public ItemRequestInfoDto getRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                         @PathVariable Long requestId) throws NotFoundException {
+                                         @PathVariable Long requestId) {
         log.info("get item request controller {}", requestId);
         return service.getRequestById(requestId, userId);
     }
 
     @GetMapping
-    public List<ItemRequestInfoDto> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) throws NotFoundException {
+    public List<ItemRequestInfoDto> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("get user requests controller {}", userId);
         return service.getUserRequests(userId);
     }

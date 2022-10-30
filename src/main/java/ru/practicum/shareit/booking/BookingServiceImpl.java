@@ -38,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingPostDto post(BookingDto bookingDto, Long userId) throws NotFoundException, InsufficientRightsException, UnavailableItemException, ValidationException {
+    public BookingPostDto post(BookingDto bookingDto, Long userId) {
         Booking booking = BookingMapper.toBooking(bookingDto, userId);
         Item item = itemRepository.findById(booking.getItemId())
                 .orElseThrow(() -> new NotFoundException("item not found"));
@@ -58,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingPostDto approve(Long userId, Long bookingId, Boolean approved) throws NotFoundException, InsufficientRightsException, ValidationException {
+    public BookingPostDto approve(Long userId, Long bookingId, Boolean approved) {
         Booking booking = getById(bookingId);
         if (booking.getStatus().equals(BookingStatus.APPROVED)) {
             throw new ValidationException("cant patch approved booking");
@@ -77,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getById(Long bookingId) throws NotFoundException {
+    public Booking getById(Long bookingId) {
         Optional<Booking> booking = repository.findById(bookingId);
         if (booking.isPresent()) {
             return booking.get();
@@ -85,7 +85,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingPostDto getDtoById(Long bookingId, Long userId) throws NotFoundException, InsufficientRightsException {
+    public BookingPostDto getDtoById(Long bookingId, Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         Booking result = getById(bookingId);
@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingPostDto> getUserBookings(Long userId, String state, Integer from, Integer size) throws NotFoundException {
+    public List<BookingPostDto> getUserBookings(Long userId, String state, Integer from, Integer size) {
         User booker = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         State result = toStateConverter.convert(state);
@@ -120,7 +120,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingPostDto> getItemsBookings(Long userId, String state, Integer from, Integer size) throws NotFoundException {
+    public List<BookingPostDto> getItemsBookings(Long userId, String state, Integer from, Integer size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         State result = toStateConverter.convert(state);

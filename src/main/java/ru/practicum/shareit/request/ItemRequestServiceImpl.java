@@ -35,7 +35,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public ItemRequest postRequest(String request, Long userId) throws NotFoundException {
+    public ItemRequest postRequest(String request, Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         ItemRequest result = ItemRequestMapper.toItemRequest(request, userId);
@@ -45,7 +45,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public ItemRequestInfoDto getRequestById(Long requestId, Long userId) throws NotFoundException {
+    public ItemRequestInfoDto getRequestById(Long requestId, Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         ItemRequest request = requestRepository.findById(requestId)
@@ -60,11 +60,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public List<ItemRequestInfoDto> getUserRequests(Long userId) throws NotFoundException {
+    public List<ItemRequestInfoDto> getUserRequests(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         List<ItemRequest> requests = requestRepository.findByUserId(userId);
-        List<Item> items = itemRepository.findAllByRequestIdNotNull();
+        List<Long> ids = requests.stream().map(ItemRequest::getId).collect(Collectors.toList());
+        List<Item> items = itemRepository.findByRequestIdIn(ids);
         return toItemRequestInfoDto(requests, items);
     }
 
@@ -73,7 +74,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestInfoDto> getAllRequests(Long userId, Integer from, Integer size) {
         Pageable pageable = PageFromRequest.sortedOf(from, size, Sort.by("created").descending());
         List<ItemRequest> requests = new ArrayList<>(requestRepository.findAllByUserIdNot(userId, pageable));
-        List<Item> items = itemRepository.findAllByRequestIdNotNull();
+        List<Long> ids = requests.stream().map(ItemRequest::getId).collect(Collectors.toList());
+        List<Item> items = itemRepository.findByRequestIdIn(ids);
         return toItemRequestInfoDto(requests, items);
     }
 

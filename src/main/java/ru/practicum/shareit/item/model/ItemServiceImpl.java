@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Item addNewItem(Item item, Long userId) throws NotFoundException, NullStatusException {
+    public Item addNewItem(Item item, Long userId) {
         if (!userRepository.findAll().stream()
                 .map(User::getId).collect(Collectors.toList()).contains(userId)) {
             throw new NotFoundException("user not found");
@@ -54,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingDto> getItems(Long userId, Integer from, Integer size) throws NotFoundException {
+    public List<ItemWithBookingDto> getItems(Long userId, Integer from, Integer size) {
         Pageable pageable = PageFromRequest.of(from, size);
         List<ItemWithBookingDto> result = new ArrayList<>();
         List<Item> itemList = repository.findByOwner(userId, pageable);
@@ -65,13 +65,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getById(Long itemId) throws NotFoundException {
+    public Item getById(Long itemId) {
         return repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("item not found"));
     }
 
     @Override
-    public ItemWithBookingDto getByIdWithBooking(Long itemId, Long userId) throws NotFoundException {
+    public ItemWithBookingDto getByIdWithBooking(Long itemId, Long userId) {
         Item item = repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("item not found"));
         if (!userId.equals(item.getOwner())) {
@@ -82,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentAuthorNameDto postComment(String comment, Long itemId, Long authorId) throws ValidationException, NotFoundException {
+    public CommentAuthorNameDto postComment(String comment, Long itemId, Long authorId) {
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         List<Booking> bookings = bookingRepository.findByItemId(itemId).stream()
@@ -105,7 +105,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteItem(Long itemId, Long userId) throws InsufficientRightsException, NotFoundException {
+    public void deleteItem(Long itemId, Long userId) {
         if (!Objects.equals(userId, getById(itemId).getOwner())) {
             throw new InsufficientRightsException("can't delete other user items");
         }
@@ -113,7 +113,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) throws NotFoundException, InsufficientRightsException {
+    public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) {
         if (!Objects.equals(userId, getById(itemId).getOwner())) {
             throw new InsufficientRightsException("can't patch other user items");
         }
@@ -128,7 +128,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemDto(repository.save(resultItem));
     }
 
-    private List<CommentAuthorNameDto> commentAuthorNameDto(List<Comment> comments) throws NotFoundException {
+    private List<CommentAuthorNameDto> commentAuthorNameDto(List<Comment> comments) {
         List<CommentAuthorNameDto> dtoList = new ArrayList<>();
         for (Comment comment: comments) {
             User author = userRepository.findById(comment.getAuthor())
@@ -138,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
         return dtoList;
     }
 
-    private ItemWithBookingDto toItemWithBookingDto(Item item) throws NotFoundException {
+    private ItemWithBookingDto toItemWithBookingDto(Item item) {
         List<Booking> itemBookings = bookingRepository.findByItemIdAndStatus(item.getId(), BookingStatus.APPROVED);
         log.info("item {} List Bookings {}", item, bookingRepository.findAll());
         List<Booking> nextBookingList = itemBookings.stream()

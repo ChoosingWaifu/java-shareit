@@ -29,14 +29,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(Long userId) throws NotFoundException {
+    public UserDto getById(Long userId) {
         User user = repository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("item not found"));
         return UserMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) throws NotFoundException {
+    public UserDto updateUser(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         User resultUser = repository.findById(userDto.getId())
                 .orElseThrow(() -> new NotFoundException("item not found"));

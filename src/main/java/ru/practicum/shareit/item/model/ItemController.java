@@ -4,10 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.InsufficientRightsException;
-import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.NullStatusException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.comment.dto.CommentAuthorNameDto;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -33,14 +29,14 @@ public class ItemController {
     @GetMapping
     public List<ItemWithBookingDto> get(@RequestHeader("X-Sharer-User-Id") Long userId,
                                         @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                        @Positive @RequestParam(defaultValue = "20") Integer size) throws NotFoundException {
+                                        @Positive @RequestParam(defaultValue = "20") Integer size) {
         return itemService.getItems(userId, from, size);
     }
 
 
     @GetMapping("/{itemId}")
     public ItemWithBookingDto getById(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                      @PathVariable Long itemId) throws NotFoundException {
+                                      @PathVariable Long itemId) {
         return itemService.getByIdWithBooking(itemId, userId);
     }
 
@@ -62,7 +58,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") Long userId,
-                       @RequestBody @Valid ItemDto itemDto) throws NotFoundException, NullStatusException {
+                       @RequestBody @Valid ItemDto itemDto) {
         Item result = ItemMapper.toItem(itemDto, userId);
         log.info("created item {}", result);
         return ItemMapper.toItemDto(itemService.addNewItem(result, userId));
@@ -71,7 +67,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentAuthorNameDto postComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                             @RequestBody @Valid CommentDto commentDto,
-                                            @PathVariable Long itemId) throws ValidationException, NotFoundException {
+                                            @PathVariable Long itemId) {
         String comment = commentDto.getText();
         return itemService.postComment(comment, itemId, userId);
     }
@@ -79,14 +75,14 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto patch(@RequestHeader("X-Sharer-User-Id") Long userId,
                          @RequestBody ItemDto itemDto,
-                         @PathVariable Long itemId) throws InsufficientRightsException, NotFoundException {
+                         @PathVariable Long itemId) {
         log.info("item {} updated with {}", itemService.getById(itemId), itemDto);
         return itemService.updateItem(itemDto, itemId, userId);
     }
 
     @DeleteMapping("/{itemId}")
     public void deleteItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                           @PathVariable Long itemId) throws InsufficientRightsException, NotFoundException {
+                           @PathVariable Long itemId) {
         log.info("item {} deleted", itemService.getById(itemId));
         itemService.deleteItem(itemId, userId);
     }
