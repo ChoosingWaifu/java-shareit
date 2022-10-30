@@ -6,14 +6,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Valid
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class ItemRequestDto {
-    @NotNull
+public class ItemRequestReturnDto {
+
+    private Long id;
+
     private String description;
+
+    private LocalDateTime created;
+
 }
+

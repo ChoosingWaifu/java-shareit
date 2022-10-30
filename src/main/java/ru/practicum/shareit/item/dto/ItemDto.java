@@ -19,4 +19,16 @@ public class ItemDto {
         @NotBlank
         private String description;
         private Boolean available;
+        private Long requestId;
+
+        @Override
+        public String toString() {
+                return "ItemDto{" +
+                        "id=" + id +
+                        ", name='" + name + '\'' +
+                        ", description='" + description + '\'' +
+                        ", available=" + available +
+                        ", requestId=" + requestId +
+                        '}';
+        }
 }

@@ -2,28 +2,28 @@ package ru.practicum.shareit.item.model;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.exceptions.InsufficientRightsException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.NullStatusException;
+import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.comment.dto.CommentAuthorNameDto;
 import ru.practicum.shareit.item.comment.dto.CommentMapper;
-import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemWithBookingDto;
+import ru.practicum.shareit.pagination.PageFromRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Item addNewItem(Item item, Long userId) throws NotFoundException, NullStatusException {
+    public Item addNewItem(Item item, Long userId) {
         if (!userRepository.findAll().stream()
                 .map(User::getId).collect(Collectors.toList()).contains(userId)) {
             throw new NotFoundException("user not found");
@@ -54,9 +54,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingDto> getItems(Long userId) throws NotFoundException {
+    public List<ItemWithBookingDto> getItems(Long userId, Integer from, Integer size) {
+        Pageable pageable = PageFromRequest.of(from, size);
         List<ItemWithBookingDto> result = new ArrayList<>();
-        List<Item> itemList = repository.findByOwner(userId);
+        List<Item> itemList = repository.findByOwner(userId, pageable);
         for (Item item: itemList) {
             result.add(toItemWithBookingDto(item));
         }
@@ -64,13 +65,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getById(Long itemId) throws NotFoundException {
+    public Item getById(Long itemId) {
         return repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("item not found"));
     }
 
     @Override
-    public ItemWithBookingDto getByIdWithBooking(Long itemId, Long userId) throws NotFoundException {
+    public ItemWithBookingDto getByIdWithBooking(Long itemId, Long userId) {
         Item item = repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("item not found"));
         if (!userId.equals(item.getOwner())) {
@@ -81,7 +82,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentAuthorNameDto postComment(String comment, Long itemId, Long authorId) throws ValidationException, NotFoundException {
+    public CommentAuthorNameDto postComment(String comment, Long itemId, Long authorId) {
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new NotFoundException("user not found"));
         List<Booking> bookings = bookingRepository.findByItemId(itemId).stream()
                 .filter(o -> o.getStatus().equals(BookingStatus.APPROVED))
                 .filter(o -> o.getStart().isBefore(LocalDateTime.now()))
@@ -91,24 +94,29 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.isEmpty()) {
             throw new ValidationException("cant comment unbooked item");
         }
-        User author = userRepository.findById(authorId)
-                .orElseThrow(() -> new NotFoundException("user not found"));
         Comment result = commentRepository.save(CommentMapper.toComment(comment, itemId, authorId));
         return CommentMapper.toAuthorNameDto(result, author.getName());
     }
 
     @Override
-    public List<Item> searchItem(String text) {
-        return repository.findByNameOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true);
+    public List<ItemDto> searchItem(String text, Integer from, Integer size) {
+        Pageable pageable = PageFromRequest.of(from, size);
+        return ItemMapper.toListItemDto(repository.findByNameOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true, pageable));
     }
 
     @Override
-    public void deleteItem(Long itemId) {
+    public void deleteItem(Long itemId, Long userId) {
+        if (!Objects.equals(userId, getById(itemId).getOwner())) {
+            throw new InsufficientRightsException("can't delete other user items");
+        }
         repository.deleteById(itemId);
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, Long itemId) throws NotFoundException {
+    public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) {
+        if (!Objects.equals(userId, getById(itemId).getOwner())) {
+            throw new InsufficientRightsException("can't patch other user items");
+        }
         Item resultItem = getById(itemId);
         itemDto.setId(itemId);
         Optional<String> name = Optional.ofNullable(itemDto.getName());
@@ -120,7 +128,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemDto(repository.save(resultItem));
     }
 
-    private List<CommentAuthorNameDto> commentAuthorNameDto(List<Comment> comments) throws NotFoundException {
+    private List<CommentAuthorNameDto> commentAuthorNameDto(List<Comment> comments) {
         List<CommentAuthorNameDto> dtoList = new ArrayList<>();
         for (Comment comment: comments) {
             User author = userRepository.findById(comment.getAuthor())
@@ -130,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
         return dtoList;
     }
 
-    private ItemWithBookingDto toItemWithBookingDto(Item item) throws NotFoundException {
+    private ItemWithBookingDto toItemWithBookingDto(Item item) {
         List<Booking> itemBookings = bookingRepository.findByItemIdAndStatus(item.getId(), BookingStatus.APPROVED);
         log.info("item {} List Bookings {}", item, bookingRepository.findAll());
         List<Booking> nextBookingList = itemBookings.stream()
