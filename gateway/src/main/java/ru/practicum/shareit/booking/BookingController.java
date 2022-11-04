@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingValidateDto;
 import ru.practicum.shareit.booking.dto.BookingState;
-import ru.practicum.shareit.errorHandler.ValidationException;
+import ru.practicum.shareit.booking.dto.BookingValidateDto;
+import ru.practicum.shareit.booking.dto.StringToStateConverter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -19,6 +19,8 @@ import javax.validation.constraints.PositiveOrZero;
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 public class BookingController {
+
+    private final StringToStateConverter converter;
 
     private final BookingClient client;
 
@@ -49,9 +51,9 @@ public class BookingController {
                                                   @RequestParam(defaultValue = "ALL") String state,
                                                   @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                   @Positive @RequestParam(defaultValue = "20") Integer size) {
-        BookingState enumState = BookingState.from(state)
-                .orElseThrow(() -> new ValidationException("Unknown state: " + state));
+        BookingState enumState = converter.convert(state);
         log.info("gateway getUserBookings state {}, from {} , size {}", state, from, size);
+        assert enumState != null;
         return client.getUserBookings(userId, enumState, from, size);
     }
 
@@ -60,9 +62,9 @@ public class BookingController {
                                                    @RequestParam(defaultValue = "ALL") String state,
                                                    @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                    @Positive @RequestParam(defaultValue = "20") Integer size) {
-        BookingState enumState = BookingState.from(state)
-                .orElseThrow(() -> new ValidationException("Unknown state: " + state));
+        BookingState enumState = converter.convert(state);
         log.info("gateway getItemsBookings state {}, from {} , size {}", state, from, size);
+        assert enumState != null;
         return client.getItemsBookings(userId, enumState, from, size);
     }
 

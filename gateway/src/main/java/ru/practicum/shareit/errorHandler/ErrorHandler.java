@@ -12,7 +12,7 @@ import java.util.Map;
 @RestControllerAdvice(assignableTypes = {BookingController.class})
 public class ErrorHandler {
 
-    @ExceptionHandler({ValidationException.class})
+    @ExceptionHandler({IllegalArgumentException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationException(final Exception e) {
         return Map.of("error", e.getMessage());
