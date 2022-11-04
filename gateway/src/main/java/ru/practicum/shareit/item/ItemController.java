@@ -25,6 +25,7 @@ public class ItemController {
     public ResponseEntity<Object> get(@RequestHeader("X-Sharer-User-Id") Long userId,
                                       @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                       @Positive @RequestParam(defaultValue = "20") Integer size) {
+        log.info("gateway get");
         return client.get(userId, from, size);
     }
 

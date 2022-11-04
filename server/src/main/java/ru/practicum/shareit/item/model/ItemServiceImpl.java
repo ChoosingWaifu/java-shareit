@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
         for (Item item: itemList) {
             result.add(toItemWithBookingDto(item));
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(ItemWithBookingDto::getId)).collect(Collectors.toList());
     }
 
     @Override

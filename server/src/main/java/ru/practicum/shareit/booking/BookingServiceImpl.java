@@ -42,6 +42,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = BookingMapper.toBooking(bookingDto, userId);
         Item item = itemRepository.findById(booking.getItemId())
                 .orElseThrow(() -> new NotFoundException("item not found"));
+        log.info("postrequest(service), item {} , available {}", item, item.getAvailable());
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         if (userId.equals(item.getOwner())) {

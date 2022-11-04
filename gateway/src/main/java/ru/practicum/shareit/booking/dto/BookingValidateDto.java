@@ -19,14 +19,14 @@ import java.time.LocalDateTime;
 public class BookingValidateDto {
 
     @NotNull
-    private Long id;
-
-    @NotNull
     @FutureOrPresent
     private LocalDateTime start;
 
     @NotNull
     @Future
     private LocalDateTime end;
+
+    @NotNull
+    private Long itemId;
 
 }

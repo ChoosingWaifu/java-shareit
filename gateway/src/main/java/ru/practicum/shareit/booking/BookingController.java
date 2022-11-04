@@ -31,14 +31,16 @@ public class BookingController {
 
     @PatchMapping(value = "/{bookingId}")
     public ResponseEntity<Object> approveRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                 @PathVariable Long bookingId,
-                                                 @RequestParam Boolean approved) {
-        return client.approveRequest(userId, bookingId, approved);
+                                                 @RequestParam Boolean approved,
+                                                 @PathVariable long bookingId) {
+        log.info("gateway approve booking request userid {}, approved {}", userId, approved);
+        return client.approveRequest(bookingId, approved, userId);
     }
 
     @GetMapping(value = "/{bookingId}")
     public ResponseEntity<Object> get(@RequestHeader("X-Sharer-User-Id") Long userId,
                                       @PathVariable Long bookingId) {
+        log.info("gateway get booking by id {}, userId {}", bookingId, userId);
         return client.get(userId, bookingId);
     }
 
