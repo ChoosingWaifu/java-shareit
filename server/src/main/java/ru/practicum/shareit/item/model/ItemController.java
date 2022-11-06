@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.model;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.comment.dto.CommentAuthorNameDto;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Validated
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
